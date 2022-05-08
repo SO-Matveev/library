@@ -4,6 +4,7 @@ const formRequest  = document.getElementById("add-form");
 let inputAuthor = document.getElementById('add-author');
 let inputTitle = document.getElementById('add-title');
 
+
 function getLibrary(){
     return fetch (url)
     .then((response) => response.json());
@@ -100,21 +101,60 @@ bookLib.addEventListener('click', (event) => {
         .then((response) => response.json())
         .then(data =>{
             const editString = document.createElement('div');
+            editString.classList.add('edit-string');
+
+            let editId = document.createElement ('input');
+            editId.type="hidden";
+            editId.id='inputEditId';
+            editId.value=data._id;
+
             let editAuthor = document.createElement('input');
+            editAuthor.id = 'inputEditAuthor';
             editAuthor.placeholder = 'Введите нового автора';
             editAuthor.value = data.author;
+
             let editTitle = document.createElement('input');
+            editTitle.id = 'inputEditTitle';
             editTitle.placeholder = 'Введите новую книгу';
             editTitle.value = data.title;
+
             const buttonEdit = document.createElement('button');
             buttonEdit.innerText = "обновить";
             buttonEdit.type = "submit";
+            buttonEdit.classList.add('book-edit-button');
 
-            editString.append(editAuthor, editTitle, buttonEdit);
+            editString.append(editId, editAuthor, editTitle, buttonEdit);
+            document.querySelector('.book-delete').before(editString);
             console.log(editString);
-            editString.before(document.querySelector('.book-delete'));
         });
         
-        
     }
+});
+
+bookLib.addEventListener("click", (event)=>{
+    event.preventDefault();
+    if(!event.target.classList.contains('book-edit-button')){
+        return;
+    }
+    else{
+        const bookId = document.getElementById('inputEditId').value;
+        const author = document.getElementById('inputEditAuthor').value;
+        const title = document.getElementById('inputEditTitle').value;
+        console.log(author);
+        console.log(title);
+
+        fetch(`${url}/${bookId}`,{
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                author,
+                title
+            }),
+        })
+        .then((response) => response.json())
+        .then((data) =>{
+            updateLibrary();
+        });
+    }
+
 });
