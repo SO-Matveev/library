@@ -13,7 +13,7 @@ async function getLibrary(user) {
     return response.json();
   } catch (error) {}
 }
-function updateLibrary() {
+async function updateLibrary() {
   const books = await getLibrary(userId)
   bookListEL.innerHTML = "";
   books.forEach((book) => {
