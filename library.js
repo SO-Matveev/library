@@ -14,53 +14,52 @@ async function getLibrary(user) {
   } catch (error) {}
 }
 function updateLibrary() {
-  getLibrary(userId).then(({ data: books }) => {
-    bookListEL.innerHTML = "";
-    books.forEach((book) => {
-      const bookWrapper = document.createElement("div");
-      bookWrapper.classList.add("book-wrapper");
-      bookWrapper.style.borderStyle = "double";
-      bookWrapper.style.borderWidth = "3px";
-      document.body.append(bookWrapper);
+  const books = await getLibrary(userId)
+  bookListEL.innerHTML = "";
+  books.forEach((book) => {
+    const bookWrapper = document.createElement("div");
+    bookWrapper.classList.add("book-wrapper");
+    bookWrapper.style.borderStyle = "double";
+    bookWrapper.style.borderWidth = "3px";
+    document.body.append(bookWrapper);
 
-      const userLogin = document.createElement("div");
-      userLogin.innerText = book.userId;
+    const userLogin = document.createElement("div");
+    userLogin.innerText = book.userId;
 
-      const bookId = document.createElement("div");
-      bookId.innerText = book._id;
-      bookId.style.display = "none";
+    const bookId = document.createElement("div");
+    bookId.innerText = book._id;
+    bookId.style.display = "none";
 
-      const authorName = document.createElement("div");
-      authorName.innerText = book.author;
+    const authorName = document.createElement("div");
+    authorName.innerText = book.author;
 
-      const titleBook = document.createElement("div");
-      titleBook.innerText = book.title;
+    const titleBook = document.createElement("div");
+    titleBook.innerText = book.title;
 
-      const coverImg = document.createElement("img");
-      coverImg.src = book.imageUrl;
-      coverImg.style.width = "150px";
+    const coverImg = document.createElement("img");
+    coverImg.src = book.imageUrl;
+    coverImg.style.width = "150px";
 
-      const deleteButton = document.createElement("button");
-      deleteButton.textContent = "удалить";
-      deleteButton.classList.add("book-delete");
-      deleteButton.dataset.bookId = book._id;
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "удалить";
+    deleteButton.classList.add("book-delete");
+    deleteButton.dataset.bookId = book._id;
 
-      const editButton = document.createElement("button");
-      editButton.textContent = "редактировать";
-      editButton.classList.add("book-edit");
-      editButton.dataset.bookId = book._id;
+    const editButton = document.createElement("button");
+    editButton.textContent = "редактировать";
+    editButton.classList.add("book-edit");
+    editButton.dataset.bookId = book._id;
 
-      bookWrapper.append(
-        userLogin,
-        bookId,
-        authorName,
-        titleBook,
-        coverImg,
-        deleteButton,
-        editButton
-      );
-      bookListEL.append(bookWrapper);
-    });
+    bookWrapper.append(
+      userLogin,
+      bookId,
+      authorName,
+      titleBook,
+      coverImg,
+      deleteButton,
+      editButton
+    );
+    bookListEL.append(bookWrapper);
   });
 }
 updateLibrary(userId);
