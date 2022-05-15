@@ -5,6 +5,7 @@ let inputAuthor = document.getElementById("add-author");
 let inputTitle = document.getElementById("add-title");
 let userId = document.getElementById("user-login");
 
+// Обращение в БД
 async function getLibrary(user) {
   try {
     const response = await fetch(`${apiUrl}/books`, {
@@ -13,6 +14,9 @@ async function getLibrary(user) {
     return response.json();
   } catch (error) {}
 }
+
+// Получение списка книг в БД
+
 async function updateLibrary() {
   const books = await getLibrary(userId);
   bookListEL.innerHTML = "";
@@ -50,6 +54,11 @@ async function updateLibrary() {
     editButton.classList.add("book-edit");
     editButton.dataset.bookId = book._id;
 
+    const commentButton = document.createElement("button");
+    commentButton.textContent = "показать комментарии";
+    commentButton.classList.add("book-comment");
+    commentButton.dataset.bookId = book._id;
+
     bookWrapper.append(
       userLogin,
       bookId,
@@ -57,12 +66,15 @@ async function updateLibrary() {
       titleBook,
       coverImg,
       deleteButton,
-      editButton
+      editButton,
+      commentButton
     );
     bookListEL.append(bookWrapper);
   });
 }
 updateLibrary(userId);
+
+// Добавление новой книги
 
 addForm.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -90,6 +102,9 @@ addForm.addEventListener("submit", (event) => {
     });
   }
 });
+
+//Кнопка удаления книги
+
 bookListEL.addEventListener("click", (event) => {
   if (!event.target.classList.contains("book-delete")) {
     return;
@@ -102,6 +117,8 @@ bookListEL.addEventListener("click", (event) => {
     });
   }
 });
+
+// Кнопка редактировать
 
 bookListEL.addEventListener("click", (event) => {
   if (!event.target.classList.contains("book-edit")) {
@@ -141,6 +158,8 @@ bookListEL.addEventListener("click", (event) => {
   }
 });
 
+// Отправка обновления редактирования
+
 bookListEL.addEventListener("click", (event) => {
   event.preventDefault();
   if (!event.target.classList.contains("book-edit-button")) {
@@ -164,3 +183,68 @@ bookListEL.addEventListener("click", (event) => {
       });
   }
 });
+
+//Кнопка показать комментарии
+
+bookListEL.addEventListener("click", (event) => {
+  if (!event.target.classList.contains("book-comment")) {
+    return;
+  } else {
+    const bookId = event.target.dataset.bookId;
+    fetch(`${apiUrl}/books/${bookId}`)
+      .then((response) => response.json())
+      .then((data) => {
+        const commentShowDiv = document.createElement("div");
+        commentShowDiv.classList.add("comments");
+        commentShowDiv.dataset.bookId = data._id;
+
+        const commentsForm = document.createElement("form");
+        commentsForm.id = "comment-form";
+        commentsForm.textContent = "Добавить новый комментарий";
+
+        let commentName = document.createElement("input");
+        commentName.id = "inputCommentName";
+        commentName.placeholder = "Ваше имя";
+
+        let commentText = document.createElement("textarea");
+        commentText.id = "inputCommentText";
+        commentText.placeholder = "Напишите Ваш комментарий";
+
+        const buttonSendComment = document.createElement("button");
+        buttonSendComment.innerText = "отправить";
+        buttonSendComment.type = "submit";
+        buttonSendComment.classList.add("book-comment-button");
+
+        commentsForm.append(commentName, commentText, buttonSendComment);
+        let stringInsert = event.target.closest(".book-wrapper");
+        stringInsert
+          .querySelector(".book-comment")
+          .after(commentShowDiv, commentsForm);
+      });
+  }
+});
+
+//Запрос в БД на наличие комментариев
+async function getComment(bookId) {
+  try {
+    const response = await fetch(`${apiUrl}/books/${bookId}/comments`);
+    return response.json();
+  } catch (error) {}
+}
+
+async function updateComment(bookId) {
+  const commentElement = document.querySelector(
+    `.comments[data-book-id="${bookId}]`
+  );
+  console.log(commentElement);
+  const data = await getComment(bookId);
+  data.forEach((comment) => {
+    const divName = document.createElement("div");
+    divName.innerText = comment.name;
+
+    const divText = document.createElement("div");
+    divText.innerText = comment.text;
+
+    commentElement.prepend(divName, divText);
+  });
+}
