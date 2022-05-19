@@ -4,7 +4,8 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <link rel="stylesheet" href="library.css">
+    <title>Digital library</title>
   </head>
   <body>
     <h1>Электронная библиотека</h1>
@@ -30,6 +31,18 @@
     <h2>Список книг</h2>
 
     <div class="book-list"></div>
+
+
+    <div class="overlay">
+      <div class="modal" id="modal-edit-form">
+        <div class="modal-close">&times;</div>
+        <form action="#" class="edit-form"></form>
+          <input type="hidden" id="inputEditId">
+          <input class="inputEdit" type="text" id="inputEditAuthor" placeholder="Введите нового автора">
+          <input class="inputEdit" type="text" id="inputEditTitle" placeholder="Введите новую книгу">
+          <button type="submit" class="book-edit-button">обновить</button>
+        </form>
+      </div>
 
     <script src="library.js"></script>
   </body>

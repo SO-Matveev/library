@@ -4,6 +4,11 @@ const addForm = document.getElementById("add-form");
 let inputAuthor = document.getElementById("add-author");
 let inputTitle = document.getElementById("add-title");
 let userId = document.getElementById("user-login");
+const overlay = document.querySelector(".overlay");
+const modal = document.getElementById("modal-edit-form");
+let inputEditId = document.getElementById("inputEditId");
+let editAuthor = document.getElementById("inputEditAuthor");
+let editTitle = document.getElementById("inputEditTitle");
 
 // Обращение в БД
 async function getLibrary(user) {
@@ -125,49 +130,36 @@ bookListEL.addEventListener("click", (event) => {
     return;
   } else {
     const bookId = event.target.dataset.bookId;
+    overlay.style.display = "block";
     fetch(`${apiUrl}/books/${bookId}`)
       .then((response) => response.json())
       .then((data) => {
-        const editString = document.createElement("div");
-        editString.classList.add("edit-string");
-
-        let inputEditId = document.createElement("input");
-        inputEditId.type = "hidden";
-        inputEditId.id = "inputEditId";
         inputEditId.value = data._id;
-
-        let editAuthor = document.createElement("input");
-        editAuthor.id = "inputEditAuthor";
-        editAuthor.placeholder = "Введите нового автора";
         editAuthor.value = data.author;
-
-        let editTitle = document.createElement("input");
-        editTitle.id = "inputEditTitle";
-        editTitle.placeholder = "Введите новую книгу";
+        console.log(editAuthor.value);
         editTitle.value = data.title;
-
-        const buttonEdit = document.createElement("button");
-        buttonEdit.innerText = "обновить";
-        buttonEdit.type = "submit";
-        buttonEdit.classList.add("book-edit-button");
-
-        editString.append(inputEditId, editAuthor, editTitle, buttonEdit);
-        let stringInsert = event.target.closest(".book-wrapper");
-        stringInsert.querySelector(".book-delete").before(editString);
+        console.log(editTitle.value);
       });
   }
 });
+//Закрывание модального окна
+function closeModal() {
+  inputEditId.value = "";
+  editAuthor.value = "";
+  editTitle.value = "";
+  overlay.style.display = "none";
+}
 
 // Отправка обновления редактирования
 
-bookListEL.addEventListener("click", (event) => {
+modal.addEventListener("click", (event) => {
   event.preventDefault();
   if (!event.target.classList.contains("book-edit-button")) {
     return;
   } else {
-    const bookId = document.getElementById("inputEditId").value;
-    const author = document.getElementById("inputEditAuthor").value;
-    const title = document.getElementById("inputEditTitle").value;
+    const bookId = inputEditId.value;
+    const author = editAuthor.value;
+    const title = editTitle.value;
 
     fetch(`${apiUrl}/books/${bookId}`, {
       method: "PUT",
@@ -178,11 +170,38 @@ bookListEL.addEventListener("click", (event) => {
       }),
     })
       .then((response) => response.json())
-      .then((data) => {
+      .then(() => {
         updateLibrary();
+        closeModal();
       });
   }
 });
+
+// Запрос в БД на наличие комментариев
+
+// async function getComment(bookId) {
+//   try {
+//     const response = await fetch(`${apiUrl}/books/${bookId}/comments`);
+//     return response.json();
+//   } catch (error) {}
+// }
+
+// async function updateComment(bookId) {
+//   const commentElement = document.querySelector(
+//     `.comments[data-book-id="${bookId}]`
+//   );
+
+//   const data = await getComment(bookId);
+//   data.forEach((comment) => {
+//     const divName = document.createElement("div");
+//     divName.innerText = comment.name;
+
+//     const divText = document.createElement("div");
+//     divText.innerText = comment.text;
+
+//     commentElement.prepend(divName, divText);
+//   });
+// }
 
 //Кнопка показать комментарии
 
@@ -191,60 +210,32 @@ bookListEL.addEventListener("click", (event) => {
     return;
   } else {
     const bookId = event.target.dataset.bookId;
-    fetch(`${apiUrl}/books/${bookId}`)
-      .then((response) => response.json())
-      .then((data) => {
-        const commentShowDiv = document.createElement("div");
-        commentShowDiv.classList.add("comments");
-        commentShowDiv.dataset.bookId = data._id;
 
-        const commentsForm = document.createElement("form");
-        commentsForm.id = "comment-form";
-        commentsForm.textContent = "Добавить новый комментарий";
+    const commentShowDiv = document.createElement("div");
+    commentShowDiv.classList.add("comments");
+    commentShowDiv.dataset.bookId = bookId;
 
-        let commentName = document.createElement("input");
-        commentName.id = "inputCommentName";
-        commentName.placeholder = "Ваше имя";
+    const commentsForm = document.createElement("form");
+    commentsForm.id = "comment-form";
+    commentsForm.textContent = "Добавить новый комментарий";
 
-        let commentText = document.createElement("textarea");
-        commentText.id = "inputCommentText";
-        commentText.placeholder = "Напишите Ваш комментарий";
+    let commentName = document.createElement("input");
+    commentName.id = "inputCommentName";
+    commentName.placeholder = "Ваше имя";
 
-        const buttonSendComment = document.createElement("button");
-        buttonSendComment.innerText = "отправить";
-        buttonSendComment.type = "submit";
-        buttonSendComment.classList.add("book-comment-button");
+    let commentText = document.createElement("textarea");
+    commentText.id = "inputCommentText";
+    commentText.placeholder = "Напишите Ваш комментарий";
 
-        commentsForm.append(commentName, commentText, buttonSendComment);
-        let stringInsert = event.target.closest(".book-wrapper");
-        stringInsert
-          .querySelector(".book-comment")
-          .after(commentShowDiv, commentsForm);
-      });
+    const buttonSendComment = document.createElement("button");
+    buttonSendComment.innerText = "отправить";
+    buttonSendComment.type = "submit";
+    buttonSendComment.classList.add("book-comment-button");
+
+    commentsForm.append(commentName, commentText, buttonSendComment);
+    let stringInsert = event.target.closest(".book-wrapper");
+    stringInsert
+      .querySelector(".book-comment")
+      .after(commentShowDiv, commentsForm);
   }
 });
-
-//Запрос в БД на наличие комментариев
-async function getComment(bookId) {
-  try {
-    const response = await fetch(`${apiUrl}/books/${bookId}/comments`);
-    return response.json();
-  } catch (error) {}
-}
-
-async function updateComment(bookId) {
-  const commentElement = document.querySelector(
-    `.comments[data-book-id="${bookId}]`
-  );
-  console.log(commentElement);
-  const data = await getComment(bookId);
-  data.forEach((comment) => {
-    const divName = document.createElement("div");
-    divName.innerText = comment.name;
-
-    const divText = document.createElement("div");
-    divText.innerText = comment.text;
-
-    commentElement.prepend(divName, divText);
-  });
-}
