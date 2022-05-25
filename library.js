@@ -28,12 +28,11 @@ async function updateLibrary() {
   books.data.forEach((book) => {
     const bookWrapper = document.createElement("div");
     bookWrapper.classList.add("book-wrapper");
-    bookWrapper.style.borderStyle = "double";
-    bookWrapper.style.borderWidth = "3px";
     document.body.append(bookWrapper);
 
     const userLogin = document.createElement("div");
     userLogin.innerText = book.userId;
+    userLogin.style.display = "none";
 
     const bookId = document.createElement("div");
     bookId.innerText = book._id;
@@ -41,13 +40,15 @@ async function updateLibrary() {
 
     const authorName = document.createElement("div");
     authorName.innerText = book.author;
+    authorName.classList.add("book-descr");
 
     const titleBook = document.createElement("div");
     titleBook.innerText = book.title;
+    titleBook.classList.add("book-descr");
 
     const coverImg = document.createElement("img");
     coverImg.src = book.imageUrl;
-    coverImg.style.width = "150px";
+    coverImg.classList.add("cover-img");
 
     const deleteButton = document.createElement("button");
     deleteButton.textContent = "удалить";
@@ -64,16 +65,15 @@ async function updateLibrary() {
     commentButton.classList.add("book-comment");
     commentButton.dataset.bookId = book._id;
 
-    bookWrapper.append(
-      userLogin,
-      bookId,
-      authorName,
-      titleBook,
-      coverImg,
-      deleteButton,
-      editButton,
-      commentButton
-    );
+    const bookDescr = document.createElement("div");
+    bookDescr.classList.add("book-descr");
+
+    const buttonWrap = document.createElement("div");
+    buttonWrap.classList.add("button-wrap");
+    bookDescr.append(authorName, titleBook);
+    buttonWrap.append(deleteButton, editButton, commentButton);
+
+    bookWrapper.append(userLogin, bookId, bookDescr, coverImg, buttonWrap);
     bookListEL.append(bookWrapper);
   });
 }
@@ -174,6 +174,15 @@ modal.addEventListener("click", (event) => {
         closeModal();
       });
   }
+});
+
+//Кнопка закрытия модального окна
+modal.addEventListener("click", (event) => {
+  event.preventDefault();
+  if (!event.target.classList.contains("modal-close")) {
+    return;
+  }
+  closeModal();
 });
 
 // Запрос в БД на наличие комментариев

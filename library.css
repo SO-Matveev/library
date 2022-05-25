@@ -1,3 +1,121 @@
+.form-wrap {
+  border: 1px solid rgb(211, 211, 211);
+  border-radius: 5px;
+  background-color: #f5fffa;
+}
+h1,
+h2 {
+  text-align: center;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px;
+}
+.form-input {
+  display: block;
+  margin: 0 auto;
+  height: 50px;
+  border-radius: 5px;
+  background-color: #ffffff;
+  margin-bottom: 15px;
+  border: none;
+  padding: 0 20px;
+  font-weight: 300;
+  font-size: 14px;
+  color: #4b4b4b;
+}
+.form-save {
+  font-size: 16px;
+  font-weight: 400;
+  border-radius: 5px;
+  line-height: 1.5;
+  background-color: #ffffff;
+}
+.form-button {
+  display: block;
+  margin: 0 auto;
+  margin-top: 10px;
+  width: 140px;
+  height: 35px;
+  background: rgb(71, 197, 71);
+  font-size: 14px;
+  color: #ffffff;
+  border-radius: 5px;
+  border: none;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.book-list {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -5px;
+}
+.book-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 5px;
+  padding: 10px;
+  border: 1px solid rgb(211, 211, 211);
+  border-radius: 5px;
+  margin-top: 10px;
+  background-color: #f5fffa;
+}
+
+.button-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 0 -3px;
+}
+.book-delete {
+  margin: 0 3px;
+  width: 80px;
+  height: 35px;
+  background: rgb(206, 62, 52);
+  font-size: 14px;
+  color: #ffffff;
+  border-radius: 5px;
+  border: none;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+.book-edit {
+  margin: 0 3px;
+  width: 140px;
+  height: 35px;
+  background: rgb(52, 137, 206);
+  font-size: 14px;
+  color: #ffffff;
+  border-radius: 5px;
+  border: none;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+.cover-img {
+  height: 250px;
+  margin: 10px;
+}
+.book-descr {
+  font-size: 20px;
+  font-weight: 500;
+  font-style: oblique;
+}
+.book-comment {
+  margin: 0 3px;
+  width: 140px;
+  height: 35px;
+  background: rgb(52, 137, 206);
+  font-size: 14px;
+  color: #ffffff;
+  border-radius: 5px;
+  border: none;
+  font-weight: 500;
+  text-transform: uppercase;
+}
 .overlay {
   display: none;
   position: fixed;
@@ -35,7 +153,6 @@
   color: #ffffff;
   border-radius: 5px;
   border: none;
-  font-size: 12px;
   font-weight: 500;
   text-transform: uppercase;
 }

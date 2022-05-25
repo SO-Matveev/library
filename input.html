@@ -8,41 +8,46 @@
     <title>Digital library</title>
   </head>
   <body>
-    <h1>Электронная библиотека</h1>
-    <h2>Добавление книг</h2>
-    <form id="add-form" class="form">
-      <input type="text" id="user-login" placeholder="Введите логин" />
-      <input
-        type="text"
-        id="add-author"
-        class="form-input"
-        placeholder="Автор книги"
-      />
-      <input
-        type="text"
-        id="add-title"
-        class="form-input"
-        placeholder="Название книги"
-      />
-      <input type="file" name="cover" id="cover" />
-      <button type="submit" class="form-button">Добавить</button>
-    </form>
-
-    <h2>Список книг</h2>
-
-    <div class="book-list"></div>
-
-
-    <div class="overlay">
-      <div class="modal" id="modal-edit-form">
-        <div class="modal-close">&times;</div>
-        <form action="#" class="edit-form"></form>
-          <input type="hidden" id="inputEditId">
-          <input class="inputEdit" type="text" id="inputEditAuthor" placeholder="Введите нового автора">
-          <input class="inputEdit" type="text" id="inputEditTitle" placeholder="Введите новую книгу">
-          <button type="submit" class="book-edit-button">обновить</button>
+    <div class="container">
+      <h1>Электронная библиотека</h1>
+      <div class="form-wrap">
+        <h2>Добавление книг</h2>
+        <form id="add-form" class="form">
+          <input class="form-input"type="text" id="user-login" placeholder="Введите логин" />
+          <input
+            type="text"
+            id="add-author"
+            class="form-input"
+            placeholder="Автор книги"
+          />
+          <input
+            type="text"
+            id="add-title"
+            class="form-input"
+            placeholder="Название книги"
+          />
+          <input class="form-save"type="file" name="cover" id="cover" />
+          <button type="submit" class="form-button">Добавить</button>
         </form>
       </div>
+  
+      <h2>Список книг</h2>
+  
+      <div class="book-list"></div>
+  
+  
+      <div class="overlay">
+        <div class="modal" id="modal-edit-form">
+          <div class="modal-close">&times;</div>
+          <form action="#" class="edit-form"></form>
+            <input type="hidden" id="inputEditId">
+            <input class="inputEdit" type="text" id="inputEditAuthor" placeholder="Введите нового автора">
+            <input class="inputEdit" type="text" id="inputEditTitle" placeholder="Введите новую книгу">
+            <button type="submit" class="book-edit-button">обновить</button>
+          </form>
+        </div>
+    </div>
+    
 
     <script src="library.js"></script>
   </body>
