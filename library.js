@@ -67,10 +67,10 @@ async function updateLibrary() {
 
     const bookDescr = document.createElement("div");
     bookDescr.classList.add("book-descr");
+    bookDescr.append(authorName, titleBook);
 
     const buttonWrap = document.createElement("div");
     buttonWrap.classList.add("button-wrap");
-    bookDescr.append(authorName, titleBook);
     buttonWrap.append(deleteButton, editButton, commentButton);
 
     bookWrapper.append(userLogin, bookId, bookDescr, coverImg, buttonWrap);
@@ -201,14 +201,15 @@ async function updateComment(bookId) {
   console.log(commentElement);
   const books = await getComment(bookId);
   books.data.forEach((comment) => {
-    const divName = document.createElement("div");
-    divName.textContent = comment.name;
+    const commentName = document.createElement("div");
+    commentName.textContent = `Пользователь: ${comment.name}`;
+    commentName.classList.add("comment-body");
 
-    const divText = document.createElement("div");
-    divText.textContent = comment.text;
+    const commentText = document.createElement("div");
+    commentText.textContent = `Текст: ${comment.text}`;
+    commentText.classList.add("comment-body");
 
-    commentElement.prepend(divName, divText);
-    console.log(commentElement);
+    commentElement.prepend(commentName, commentText);
   });
 }
 
@@ -219,33 +220,73 @@ bookListEL.addEventListener("click", (event) => {
     return;
   }
   const bookId = event.target.dataset.bookId;
+  const bookItem = event.target.closest(".book-wrapper");
+  const commentsBlock = bookItem.querySelector(".comments");
 
-  const commentShowDiv = document.createElement("div");
-  commentShowDiv.classList.add("comments");
-  commentShowDiv.dataset.bookId = bookId;
+  if (commentsBlock) {
+    commentsBlock.remove();
+    event.target.textContent = "Показать комментарии";
+  } else {
+    const commentShowDiv = document.createElement("div");
+    commentShowDiv.classList.add("comments");
+    commentShowDiv.innerText = "Комментарии:";
+    commentShowDiv.dataset.bookId = bookId;
 
-  const commentsForm = document.createElement("form");
-  commentsForm.id = "comment-form";
-  commentsForm.textContent = "Добавить новый комментарий";
+    const commentsForm = document.createElement("form");
+    commentsForm.classList.add("comment-form");
+    commentsForm.id = "comment-form";
+    commentsForm.textContent = "Добавить новый комментарий:";
 
-  let commentName = document.createElement("input");
-  commentName.id = "inputCommentName";
-  commentName.placeholder = "Ваше имя";
+    let commentName = document.createElement("input");
+    commentName.classList.add("comment-name");
+    commentName.id = "inputCommentName";
+    commentName.placeholder = "Ваше имя";
 
-  let commentText = document.createElement("textarea");
-  commentText.id = "inputCommentText";
-  commentText.placeholder = "Напишите Ваш комментарий";
+    let commentText = document.createElement("textarea");
+    commentText.classList.add("comment-text");
+    commentText.id = "inputCommentText";
+    commentText.placeholder = "Напишите Ваш комментарий";
 
-  const buttonSendComment = document.createElement("button");
-  buttonSendComment.innerText = "отправить";
-  buttonSendComment.type = "submit";
-  buttonSendComment.classList.add("book-comment-button");
+    const buttonSendComment = document.createElement("button");
+    buttonSendComment.classList.add("comment-send");
+    buttonSendComment.innerText = "отправить";
+    buttonSendComment.type = "submit";
 
-  commentsForm.append(commentName, commentText, buttonSendComment);
-  let stringInsert = event.target.closest(".book-wrapper");
-  stringInsert
-    .querySelector(".book-comment")
-    .after(commentShowDiv, commentsForm);
+    commentsForm.append(commentName, commentText, buttonSendComment);
+    commentShowDiv.append(commentsForm);
+    let stringInsert = event.target.closest(".book-wrapper");
 
-  updateComment(bookId);
+    stringInsert.append(commentShowDiv);
+    event.target.textContent = "Скрыть комментарии";
+    updateComment(bookId);
+  }
+});
+bookListEL.addEventListener("click", (event) => {
+  event.preventDefault();
+  if (!event.target.classList.contains("comment-send")) {
+    return;
+  }
+  const commentsFormSubmit = document.querySelector(".comment-form");
+
+  console.log(commentsFormSubmit);
+
+  const name = commentsFormSubmit.querySelector(".comment-name").value;
+  const text = commentsFormSubmit.querySelector(".comment-text").value;
+
+  console.log(name, text);
+
+  const bookId = commentsFormSubmit.dataset.bookId;
+
+  if (name && text) {
+    fetch(`${apiUrl}/books/${bookId}/comments`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name,
+        text,
+      }),
+    }).then(() => {
+      updateComment(bookId);
+    });
+  }
 });
