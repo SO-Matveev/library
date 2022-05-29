@@ -270,20 +270,20 @@ bookListEL.addEventListener("click", (event) => {
 
   console.log(commentsFormSubmit);
 
-  const name = commentsFormSubmit.querySelector(".comment-name").value;
-  const text = commentsFormSubmit.querySelector(".comment-text").value;
+  const nameComment = commentsFormSubmit.querySelector(".comment-name").value;
+  const textComment = commentsFormSubmit.querySelector(".comment-text").value;
 
-  console.log(name, text);
+  console.log(nameComment, textComment);
 
   const bookId = commentsFormSubmit.dataset.bookId;
 
-  if (name && text) {
+  if (nameComment && textComment) {
     fetch(`${apiUrl}/books/${bookId}/comments`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        name,
-        text,
+        name: nameComment,
+        text: textComment,
       }),
     }).then(() => {
       updateComment(bookId);
