@@ -187,19 +187,19 @@ modal.addEventListener("click", (event) => {
 
 // Запрос в БД на наличие комментариев
 
-async function getComment(bookId) {
-  try {
-    const response = await fetch(`${apiUrl}/books/${bookId}/comments`);
-    return response.json();
-  } catch (error) {}
-}
+// async function getComment(bookId) {
+//   try {
+//     const response = await fetch(`${apiUrl}/books/${bookId}/comments`);
+//     return response.json();
+//   } catch (error) {}
+// }
 
 async function updateComment(bookId) {
   const commentElement = document.querySelector(
     `.comments[data-book-id="${bookId}"]`
   );
-  console.log(commentElement);
-  const books = await getComment(bookId);
+  const response = await fetch(`${apiUrl}/books/${bookId}/comments`);
+  const books = await response.json();
   books.data.forEach((comment) => {
     const commentName = document.createElement("div");
     commentName.textContent = `Пользователь: ${comment.name}`;
@@ -267,15 +267,12 @@ bookListEL.addEventListener("click", (event) => {
     return;
   }
   const commentsFormSubmit = document.querySelector(".comment-form");
-
-  console.log(commentsFormSubmit);
+  const coomentsDiv = document.querySelector(".comments");
 
   const nameComment = commentsFormSubmit.querySelector(".comment-name").value;
   const textComment = commentsFormSubmit.querySelector(".comment-text").value;
 
-  console.log(nameComment, textComment);
-
-  const bookId = commentsFormSubmit.dataset.bookId;
+  const bookId = coomentsDiv.dataset.bookId;
 
   if (nameComment && textComment) {
     fetch(`${apiUrl}/books/${bookId}/comments`, {
