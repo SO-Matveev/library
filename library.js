@@ -189,8 +189,9 @@ modal.addEventListener("click", (event) => {
 
 async function updateComment(bookId) {
   const commentElement = document.querySelector(
-    `.comments[data-book-id="${bookId}"]`
+    `.comments[data-book-id="${bookId}"] .comments-list`
   );
+  commentElement.innerHTML = ''
   const response = await fetch(`${apiUrl}/books/${bookId}/comments`);
   const books = await response.json();
 
@@ -223,7 +224,7 @@ bookListEL.addEventListener("click", (event) => {
   } else {
     const commentShowDiv = document.createElement("div");
     commentShowDiv.classList.add("comments");
-    commentShowDiv.innerText = "Комментарии:";
+    commentShowDiv.innerHTML = '<h2>Комментарии:</h2><div class="comments-list"></div>';
     commentShowDiv.dataset.bookId = bookId;
 
     const commentsForm = document.createElement("form");
