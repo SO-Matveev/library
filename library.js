@@ -187,19 +187,13 @@ modal.addEventListener("click", (event) => {
 
 // Запрос в БД на наличие комментариев
 
-// async function getComment(bookId) {
-//   try {
-//     const response = await fetch(`${apiUrl}/books/${bookId}/comments`);
-//     return response.json();
-//   } catch (error) {}
-// }
-
 async function updateComment(bookId) {
   const commentElement = document.querySelector(
     `.comments[data-book-id="${bookId}"]`
   );
   const response = await fetch(`${apiUrl}/books/${bookId}/comments`);
   const books = await response.json();
+
   books.data.forEach((comment) => {
     const commentName = document.createElement("div");
     commentName.textContent = `Пользователь: ${comment.name}`;
@@ -254,6 +248,7 @@ bookListEL.addEventListener("click", (event) => {
 
     commentsForm.append(commentName, commentText, buttonSendComment);
     commentShowDiv.append(commentsForm);
+
     let stringInsert = event.target.closest(".book-wrapper");
 
     stringInsert.append(commentShowDiv);
@@ -261,6 +256,9 @@ bookListEL.addEventListener("click", (event) => {
     updateComment(bookId);
   }
 });
+
+//Отправка комментария
+
 bookListEL.addEventListener("click", (event) => {
   event.preventDefault();
   if (!event.target.classList.contains("comment-send")) {
@@ -283,6 +281,8 @@ bookListEL.addEventListener("click", (event) => {
         text: textComment,
       }),
     }).then(() => {
+      nameComment.value = "";
+      textComment.value = "";
       updateComment(bookId);
     });
   }
