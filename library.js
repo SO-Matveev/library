@@ -192,6 +192,8 @@ async function updateComment(bookId) {
   const commentElement = document.querySelector(
     `.comments[data-book-id="${bookId}"] .comments-list`
   );
+  commentElement.innerHTML = "";
+
   const response = await fetch(`${apiUrl}/books/${bookId}/comments`);
   const books = await response.json();
 
@@ -224,7 +226,8 @@ bookListEL.addEventListener("click", (event) => {
   } else {
     const commentShowDiv = document.createElement("div");
     commentShowDiv.classList.add("comments");
-    commentShowDiv.innerHTML = '<h3>Комментарии:</h3><div class="comments-list"></div>';
+    commentShowDiv.innerHTML =
+      '<h3>Комментарии:</h3><div class="comments-list"></div>';
     commentShowDiv.dataset.bookId = bookId;
 
     const commentsForm = document.createElement("form");
@@ -268,8 +271,8 @@ bookListEL.addEventListener("click", (event) => {
   const commentsFormSubmit = document.querySelector(".comment-form");
   const coomentsDiv = document.querySelector(".comments");
 
-  const nameComment = commentsFormSubmit.querySelector(".comment-name").value;
-  const textComment = commentsFormSubmit.querySelector(".comment-text").value;
+  const nameComment = commentsFormSubmit.querySelector(".comment-name");
+  const textComment = commentsFormSubmit.querySelector(".comment-text");
 
   const bookId = coomentsDiv.dataset.bookId;
 
@@ -278,8 +281,8 @@ bookListEL.addEventListener("click", (event) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        name: nameComment,
-        text: textComment,
+        name: nameComment.value,
+        text: textComment.value,
       }),
     }).then(() => {
       nameComment.value = "";
