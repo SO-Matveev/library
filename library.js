@@ -190,7 +190,7 @@ modal.addEventListener("click", (event) => {
 
 async function updateComment(bookId) {
   const commentElement = document.querySelector(
-    `.comments[data-book-id="${bookId}"]`
+    `.comments[data-book-id="${bookId}"] .comments-list`
   );
   const response = await fetch(`${apiUrl}/books/${bookId}/comments`);
   const books = await response.json();
@@ -204,7 +204,7 @@ async function updateComment(bookId) {
     commentText.textContent = `Текст: ${comment.text}`;
     commentText.classList.add("comment-body");
 
-    commentElement.prepend(commentName, commentText);
+    commentElement.append(commentName, commentText);
   });
 }
 
@@ -224,7 +224,7 @@ bookListEL.addEventListener("click", (event) => {
   } else {
     const commentShowDiv = document.createElement("div");
     commentShowDiv.classList.add("comments");
-    commentShowDiv.innerText = "Комментарии:";
+    commentShowDiv.innerHTML = '<h3>Комментарии:</h3><div class="comments-list"></div>';
     commentShowDiv.dataset.bookId = bookId;
 
     const commentsForm = document.createElement("form");
