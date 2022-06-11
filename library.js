@@ -1,9 +1,9 @@
 let apiUrl = "https://nordic-books-api.herokuapp.com";
+const userId = "";
 const bookListEL = document.querySelector(".book-list");
 const addForm = document.getElementById("add-form");
 let inputAuthor = document.getElementById("add-author");
 let inputTitle = document.getElementById("add-title");
-let userId = document.getElementById("user-login");
 const overlay = document.querySelector(".overlay");
 const modal = document.getElementById("modal-edit-form");
 let inputEditId = document.getElementById("inputEditId");
@@ -11,10 +11,10 @@ let editAuthor = document.getElementById("inputEditAuthor");
 let editTitle = document.getElementById("inputEditTitle");
 
 // Обращение в БД
-async function getLibrary(user) {
+async function getLibrary() {
   try {
     const response = await fetch(`${apiUrl}/books`, {
-      headers: { "user-Id": user.value },
+      headers: { "user-Id": userId },
     });
     return response.json();
   } catch (error) {}
@@ -77,7 +77,8 @@ async function updateLibrary() {
     bookListEL.append(bookWrapper);
   });
 }
-updateLibrary(userId);
+//Запуск
+updateLibrary();
 
 // Добавление новой книги
 
