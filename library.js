@@ -1,9 +1,9 @@
 let apiUrl = "https://nordic-books-api.herokuapp.com";
+const userId = "";
 const bookListEL = document.querySelector(".book-list");
 const addForm = document.getElementById("add-form");
 let inputAuthor = document.getElementById("add-author");
 let inputTitle = document.getElementById("add-title");
-let userId = document.getElementById("user-login");
 const overlay = document.querySelector(".overlay");
 const modal = document.getElementById("modal-edit-form");
 let inputEditId = document.getElementById("inputEditId");
@@ -11,10 +11,10 @@ let editAuthor = document.getElementById("inputEditAuthor");
 let editTitle = document.getElementById("inputEditTitle");
 
 // Обращение в БД
-async function getLibrary(user) {
+async function getLibrary() {
   try {
     const response = await fetch(`${apiUrl}/books`, {
-      headers: { "user-Id": user.value },
+      headers: { "user-Id": userId },
     });
     return response.json();
   } catch (error) {}
@@ -77,7 +77,8 @@ async function updateLibrary() {
     bookListEL.append(bookWrapper);
   });
 }
-updateLibrary(userId);
+//Запуск
+updateLibrary();
 
 // Добавление новой книги
 
@@ -187,19 +188,15 @@ modal.addEventListener("click", (event) => {
 
 // Запрос в БД на наличие комментариев
 
-// async function getComment(bookId) {
-//   try {
-//     const response = await fetch(`${apiUrl}/books/${bookId}/comments`);
-//     return response.json();
-//   } catch (error) {}
-// }
-
 async function updateComment(bookId) {
   const commentElement = document.querySelector(
-    `.comments[data-book-id="${bookId}"]`
+    `.comments[data-book-id="${bookId}"] .comments-list`
   );
+  commentElement.innerHTML = "";
+
   const response = await fetch(`${apiUrl}/books/${bookId}/comments`);
   const books = await response.json();
+
   books.data.forEach((comment) => {
     const commentName = document.createElement("div");
     commentName.textContent = `Пользователь: ${comment.name}`;
@@ -209,7 +206,7 @@ async function updateComment(bookId) {
     commentText.textContent = `Текст: ${comment.text}`;
     commentText.classList.add("comment-body");
 
-    commentElement.prepend(commentName, commentText);
+    commentElement.append(commentName, commentText);
   });
 }
 
@@ -229,7 +226,8 @@ bookListEL.addEventListener("click", (event) => {
   } else {
     const commentShowDiv = document.createElement("div");
     commentShowDiv.classList.add("comments");
-    commentShowDiv.innerText = "Комментарии:";
+    commentShowDiv.innerHTML =
+      '<h3>Комментарии:</h3><div class="comments-list"></div>';
     commentShowDiv.dataset.bookId = bookId;
 
     const commentsForm = document.createElement("form");
@@ -254,6 +252,7 @@ bookListEL.addEventListener("click", (event) => {
 
     commentsForm.append(commentName, commentText, buttonSendComment);
     commentShowDiv.append(commentsForm);
+
     let stringInsert = event.target.closest(".book-wrapper");
 
     stringInsert.append(commentShowDiv);
@@ -261,6 +260,9 @@ bookListEL.addEventListener("click", (event) => {
     updateComment(bookId);
   }
 });
+
+//Отправка комментария
+
 bookListEL.addEventListener("click", (event) => {
   event.preventDefault();
   if (!event.target.classList.contains("comment-send")) {
@@ -269,8 +271,8 @@ bookListEL.addEventListener("click", (event) => {
   const commentsFormSubmit = document.querySelector(".comment-form");
   const coomentsDiv = document.querySelector(".comments");
 
-  const nameComment = commentsFormSubmit.querySelector(".comment-name").value;
-  const textComment = commentsFormSubmit.querySelector(".comment-text").value;
+  const nameComment = commentsFormSubmit.querySelector(".comment-name");
+  const textComment = commentsFormSubmit.querySelector(".comment-text");
 
   const bookId = coomentsDiv.dataset.bookId;
 
@@ -279,10 +281,12 @@ bookListEL.addEventListener("click", (event) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        name: nameComment,
-        text: textComment,
+        name: nameComment.value,
+        text: textComment.value,
       }),
     }).then(() => {
+      nameComment.value = "";
+      textComment.value = "";
       updateComment(bookId);
     });
   }
