@@ -1,6 +1,6 @@
 let apiUrl = "https://nordic-books-api.herokuapp.com";
 const userId = "";
-const bookListEL = document.querySelector(".book-list");
+const bookListEl = document.querySelector(".book-list");
 const addForm = document.getElementById("add-form");
 let inputAuthor = document.getElementById("add-author");
 let inputTitle = document.getElementById("add-title");
@@ -11,9 +11,9 @@ let editAuthor = document.getElementById("inputEditAuthor");
 let editTitle = document.getElementById("inputEditTitle");
 
 // Обращение в БД
-async function getLibrary() {
+async function getLibrary(page = 0) {
   try {
-    const response = await fetch(`${apiUrl}/books`, {
+    const response = await fetch(`${apiUrl}/books?page=${page}`, {
       headers: { "user-Id": userId },
     });
     return response.json();
@@ -24,7 +24,10 @@ async function getLibrary() {
 
 async function updateLibrary() {
   const books = await getLibrary(userId);
-  bookListEL.innerHTML = "";
+  const page = books.data.page;
+
+  bookListEl.innerHTML = "";
+
   books.data.forEach((book) => {
     const bookWrapper = document.createElement("div");
     bookWrapper.classList.add("book-wrapper");
@@ -74,9 +77,10 @@ async function updateLibrary() {
     buttonWrap.append(deleteButton, editButton, commentButton);
 
     bookWrapper.append(userLogin, bookId, bookDescr, coverImg, buttonWrap);
-    bookListEL.append(bookWrapper);
+    bookListEl.append(bookWrapper);
   });
 }
+
 //Запуск
 updateLibrary();
 
@@ -111,7 +115,7 @@ addForm.addEventListener("submit", (event) => {
 
 //Кнопка удаления книги
 
-bookListEL.addEventListener("click", (event) => {
+bookListEl.addEventListener("click", (event) => {
   if (!event.target.classList.contains("book-delete")) {
     return;
   } else {
@@ -126,7 +130,7 @@ bookListEL.addEventListener("click", (event) => {
 
 // Кнопка редактировать
 
-bookListEL.addEventListener("click", (event) => {
+bookListEl.addEventListener("click", (event) => {
   if (!event.target.classList.contains("book-edit")) {
     return;
   } else {
@@ -208,11 +212,17 @@ async function updateComment(bookId) {
 
     commentElement.append(commentName, commentText);
   });
+  if (books.data.length === 0) {
+    commentElement.insertAdjacentHTML(
+      "afterBegin",
+      "<h4>Комментариев пока нет</h4>"
+    );
+  }
 }
 
 //Кнопка показать комментарии
 
-bookListEL.addEventListener("click", (event) => {
+bookListEl.addEventListener("click", (event) => {
   if (!event.target.classList.contains("book-comment")) {
     return;
   }
@@ -263,7 +273,7 @@ bookListEL.addEventListener("click", (event) => {
 
 //Отправка комментария
 
-bookListEL.addEventListener("click", (event) => {
+bookListEl.addEventListener("click", (event) => {
   event.preventDefault();
   if (!event.target.classList.contains("comment-send")) {
     return;
